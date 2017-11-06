@@ -3,3 +3,8 @@ import sys
 import math
 import random
 import time
+
+class MaFenetreGraphique(tkinter.Tk):
+
+  def __init__(self, parent = None):
+      
