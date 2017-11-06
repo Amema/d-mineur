@@ -8,3 +8,12 @@ class MaFenetreGraphique(tkinter.Tk):
 
   def __init__(self, parent = None):
       
+      self.choix = tkinter.Label(self,text="choix de difficulté")
+      self.choix.grid(row=0,column=2)
+      self.un=tkinter.Button(self,text=" + ",command=self.un)
+      self.deux=tkinter.Button(self,text=" + ",command=self.deux)
+      self.trois=tkinter.Button(self,text=" + ",command=self.trois)
+      self.un.grid(row=1,column=0)
+      self.deux.grid(row=1,column=1)
+      self.trois.grid(row=1,column=2)
+      self.mainloop()
