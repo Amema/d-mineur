@@ -6,14 +6,21 @@ import time
 
 class MaFenetreGraphique(tkinter.Tk):
 
-  def __init__(self, parent = None):
-      
-      self.choix = tkinter.Label(self,text="choix de difficulté")
-      self.choix.grid(row=0,column=2)
-      self.un=tkinter.Button(self,text=" + ",command=self.un)
-      self.deux=tkinter.Button(self,text=" + ",command=self.deux)
-      self.trois=tkinter.Button(self,text=" + ",command=self.trois)
-      self.un.grid(row=1,column=0)
-      self.deux.grid(row=1,column=1)
-      self.trois.grid(row=1,column=2)
-      self.mainloop()
+    def __init__(self, parent = None):
+        tkinter.Tk.__init__(self, parent)
+        self.choix = tkinter.Label(self,text="      choix de difficulté")
+        self.choix.grid(row=0,column=2)
+        self.un=tkinter.Button(self,text=" 1 ", command=lambda : self.difficulte(1))
+        self.deux=tkinter.Button(self,text=" 2 ", command=lambda : self.difficulte(2))
+        self.trois=tkinter.Button(self,text=" 3 ", command=lambda : self.difficulte(3))
+        self.un.grid(row=1,column=1)
+        self.deux.grid(row=1,column=2)
+        self.trois.grid(row=1,column=3)
+        self.mainloop()
+
+    def difficulte(self,x):
+         print(x)
+         sys.stdout.flush()
+         
+
+MaFenetreGraphique()
