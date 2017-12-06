@@ -1,0 +1,257 @@
+from __future__ import division
+import tkinter
+import tkinter.font as tkFont
+import sys
+import math
+import random
+import time
+
+random.seed()
+
+class MFG(tkinter.Tk):
+
+    def __init__(self,couleurDeFond="green",largeur=80,hauteur=50, parent = None):
+        tkinter.Tk.__init__(self, parent)
+        self.monCanvas = tkinter.Canvas(self, width = largeur, height = hauteur, background = "green")
+        self.monCanvas.grid(row=1,column=1)
+        self.monCanvas = tkinter.Canvas(self, width = largeur, height = hauteur, background = "orange")
+        self.monCanvas.grid(row=1,column=2)
+        self.monCanvas = tkinter.Canvas(self, width = largeur, height = hauteur, background = "red")
+        self.monCanvas.grid(row=1,column=3)
+#        self.c=tkinter.Canvas(self)
+#        g=MFG.geometry(self)
+#        MFG.geometry("500x500")
+#        r=[i for i in range(0,len(g)) if not g[i].isdigit()]
+#        l,h,x,y=[int(g[0:r[0]]),int(g[r[0]+1:r[1]]),int(g[r[1]+1:r[2]]),int(g[r[2]+1:])]
+#        MFG.geometry("%dx%d%+d%+d" % (l,h,(MFG.winfo_screenwidth(self)-l)//2,(MFG.winfo_screenheight(self)-h)//2))
+#        MFG.update_idletasks(self)
+        self.choix = tkinter.Label(self,text="choix de difficulté",fg="white",bg="black",font=("Helvetica", 16))
+        self.choix.grid(row=0,column=2)
+        self.un=tkinter.Button(self,text=" 1 ", command=lambda : self.difficulte(1))
+        self.deux=tkinter.Button(self,text=" 2 ", command=lambda : self.difficulte(2))
+        self.trois=tkinter.Button(self,text=" 3 ", command=lambda : self.difficulte(3))
+        self.un.grid(row=1,column=1)
+        self.deux.grid(row=1,column=2)
+        self.trois.grid(row=1,column=3)
+        self.bind('<Control_L>', self.quitterAVT)
+        self.bind('<Control_R>', self.quitterAVT)
+        self.bind('<Shift_L>', self.afficherTout)
+        self.bind('<Button-1>',self.afficherUneCase)
+        self.photo=tkinter.PhotoImage("C:\\Users\\augus\\Desktop\\bombe.jpg")
+
+        self.tabReady = False
+
+        self.mainloop()
+
+
+    def difficulte(self,x):
+        h=MFG.winfo_screenheight(self)
+        l=MFG.winfo_screenwidth(self)
+        for c in MFG.winfo_children(self):
+            c.destroy()
+        self.w = tkinter.Canvas(self, width=600, height=600,background='grey')
+        self.w.pack()
+        self.genererTableau(x)
+        sys.stdout.flush()
+        ligne=600/len(self.tab)
+        for i in range (len(self.tab)):
+            self.w.create_line(i*ligne, 0, i*ligne, 600)
+        for i in range (len(self.tab)):
+            self.w.create_line(0, i*ligne, 600, i*ligne)
+        dist=600/len(self.tab)
+        cdc='600x600'
+        cdc=cdc+"+"+str(int((l/2)-300))
+        cdc=cdc+"+"+str(int((h/2)-340))
+        self.geometry(cdc)
+        text=self.tab[0][0]
+        self.w.create_text(37.5,37.5,text=text)
+        #self.w.create_rectangle(50, 50, 100, 100, fill="red", outline="grey", width=0)
+#        self.monCanvas.create_rectangle(1,1,76,76,fill="red")
+
+
+
+    def quitterAVT(self,event):
+        self.top=tkinter.Toplevel(self)
+        self.label=tkinter.Label(self.top,text="êtes-vous sûr de quitter?",fg="white",bg="black",font=("Helvetica", 16))
+        self.label.grid(row=1,column=1)
+        self.oui=tkinter.Button(self.top,text="oui",bg="green",activebackground="orange",relief="groove",width=10,height=10, command=lambda : self.quitterAPR(1))
+        self.oui.grid(row=3,column=0)
+        self.non=tkinter.Button(self.top,text="non",bg="red", activebackground="orange",relief="groove",width=10,height=10, command=lambda : self.quitterAPR(0))
+        self.non.grid(row=3,column=2)
+        #self.quit()
+    def quitterAPR(self,x):
+        if x==1:
+            self.quit()
+        if x==0:
+            self.top.destroy()
+
+
+    def genererTableau(self,x):
+        l=[]
+        if x==1:
+            self.tab=[[]]*8
+            for i in range(8):
+                self.tab[i]=[0]*8
+            for i in range(10):
+                x=random.randint(0,7)
+                y=random.randint(0,7)
+                while (x,y) in l:
+                    x=random.randint(0,7)
+                    y=random.randint(0,7)
+                self.tab=self.potentielBombe(self.tab,y,x)
+                l.append((x,y))
+            for i in range (8):
+                x,y=l[i]
+                self.tab[y][x]="X"
+        self.tabReady = True
+        if x==2:
+            self.tab=[[]]*16
+            for i in range(16):
+                self.tab[i]=[0]*16
+            for i in range(40):
+                x=random.randint(0,15)
+                y=random.randint(0,15)
+                while (x,y) in l:
+                    x=random.randint(0,15)
+                    y=random.randint(0,15)
+                self.tab=self.potentielBombe(self.tab,y,x)
+                l.append((x,y))
+            for i in range (40):
+                x,y=l[i]
+                self.tab[y][x]="X"
+        self.tabReady = True
+        if x==3:
+            self.tab=[[]]*23
+            for i in range(23):
+                self.tab[i]=[0]*23
+            for i in range(100):
+                x=random.randint(0,22)
+                y=random.randint(0,22)
+                while (x,y) in l:
+                    x=random.randint(0,22)
+                    y=random.randint(0,22)
+                self.tab=self.potentielBombe(self.tab,y,x)
+                l.append((x,y))
+            for i in range (100):
+                x,y=l[i]
+                self.tab[y][x]="X"
+        self.tabReady = True
+
+
+
+    def potentielBombe(self,l,y,x):
+        ly=l[y]
+        lt=[]
+        if y<=len(l)-2:
+            l[y+1][x]+=1
+            if x!=0:
+                l[y][x-1]+=1
+                l[y+1][x-1]+=1
+            if x<=len(ly)-2:
+                l[y][x+1]+=1
+                l[y+1][x+1]+=1
+        if y!=0:
+            l[y-1][x]+=1
+            if x!=0:
+                l[y-1][x-1]+=1
+            if x<=len(ly)-2:
+                l[y-1][x+1]+=1
+        return l
+
+    def voisin(self,l,x,y):
+        ly=l[y]
+        lt=[]
+        if y<=len(l)-2:
+            lt.append((y+1,x))
+            if x!=0:
+                lt.append((y,x-1))
+                lt.append((y+1,x-1))
+            if x<=len(ly)-2:
+                lt.append((y,x+1))
+                lt.append((y+1,x+1))
+        if y!=0:
+            lt.append((y-1,x))
+            if x!=0:
+                lt.append((y-1,x-1))
+            if x<=len(ly)-2:
+                lt.append((y-1,x+1))
+        return lt
+
+
+
+    def tracer(self,l):
+        for i in range (len(l)):
+            lb=l[i]
+            for z in range (len(l)):
+                print("+---",end='')
+            print("+")
+            for j in range (len(l)):
+                if lb[j]=="X":
+                    print("| # ",end='')
+                else:
+                    print("|   ",end='')
+                print("|")
+        print(" ",end='')
+        for z in range (8):
+            print("+---",end='')
+        print("+")
+
+
+
+
+    def insererSiNouveaux(self,l1,l2):
+        for i in range (len(l1)):
+            if l1[i] not in l2:
+                l2.append(l1[i])
+        return l2
+
+    def afficherUneCase(self,event):
+        if not (self.tabReady):
+            return
+
+        x=event.x
+        y=event.y
+        tt=600/len(self.tab)
+        x1=math.floor(x/tt)
+        y1=math.floor(y/tt)
+        print(x1)
+        print(y1)
+        print(tt)
+        sys.stdout.flush()
+        self.w.create_rectangle(x1*tt,y1*tt,(x1+1)*tt,(y1+1)*tt,fill="white")
+        if self.tab[y1][x1]==0:
+            l=[]
+            ldv=[]
+            l=self.voisin(self.tab,x1,y1)
+            i = 10
+            while (l!=[]) and (i>10):
+                i-=1
+                case=(l.pop())
+                ldv.append(case)
+                y,x=case
+                if self.tab[y][x]==0:
+                    self.insererSiNouveaux(self.voisin(self.tab,x,y),l)
+                    self.w.create_rectangle(x,y,x+tt,y+tt,fill="white")
+
+
+    def afficherTout(self,event):
+        x=600/len(self.tab)
+        y=x/2
+        for i in range (len(self.tab)):
+            for j in range (len(self.tab)):
+                self.w.create_rectangle(i*x,j*x,(i+1)*x,(i+1)*x,fill="white")
+                text=self.tab[i][j]
+            #    self.w.create_text(37.5+i*x,37.5+j*x,text=self.photo)
+        self.w.create_image(200,200, image=self.photo)
+        for i in range (len(self.tab)):
+            self.w.create_line(i*x, 0, i*x, 600)
+        for i in range (len(self.tab)):
+            self.w.create_line(0, i*x, 600, i*x)
+
+    def centrer(self):
+        self.geometry('500x300+50+10')
+        self.mainloop()
+
+"moncanvas.createimage(coords)"
+
+MFG()
